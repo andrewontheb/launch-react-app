@@ -46,6 +46,7 @@ export const GQLRequester: React.FC = () => {
             setErrorMessage('Type something, please');
             return;
         }
+
         setLaunchId(inputValue);
         setErrorMessage('');
 

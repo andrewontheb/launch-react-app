@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState  } from "react";
 
 const LsSetImages = (images: string[]) => {
     localStorage.setItem('images', JSON.stringify(images));
@@ -17,18 +17,32 @@ export const ImageFinder: React.FC = () => {
     const [images, setImages] = useState<string[]>(LsGetImages());
     const [searchUrl, setSearchUrl] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const handleSubmit = useCallback((imgUrl: string) => {
+    const handleSubmit = useCallback( (imgUrl: string) => {
         if(!imgUrl.length) {
             setErrorMessage( 'Type something, please');
             return;
         }
+
         if (!imgUrl.endsWith('.jpeg') && !imgUrl.endsWith('.jpg') && !imgUrl.endsWith('.png')) {
             setErrorMessage('Provided url is not valid image url.');
             return;
         }
-        setImages([...images, imgUrl]);
-        LsSetImages([...images, imgUrl]);
-        setErrorMessage('');
+
+        (async () => {
+            const response = await fetch(imgUrl);
+            if (response.ok) {
+                const contentType = response.headers.get('content-type') || '';
+                if (contentType.includes('jpeg') || contentType.includes('jpg') || contentType.includes('.png')) {
+                    setImages([...images, imgUrl]);
+                    LsSetImages([...images, imgUrl]);
+                    setErrorMessage('');
+                }
+            } else {
+                setErrorMessage('Provided url is not valid image url.');
+                return;
+            }
+        })();
+
     }, [images]);
     const handleDelete = useCallback( (index: number) => {
         const newImages = [
@@ -57,7 +71,7 @@ export const ImageFinder: React.FC = () => {
                 <div className="gallery">
                     {
                         images.map((image, index) => <div className="gallery__item" key={index}>
-                            <div className="wrapp"></div>
+                            <div className="spreader"></div>
                             <img src={`${image}`} alt=""/>
                             <button className="btn btn--close"  onClick={() => {handleDelete(index)}}>X</button>
                             <span className="placeholder">placeholder</span>

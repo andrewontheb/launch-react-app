@@ -1,30 +1,30 @@
 import React, { useState, useCallback } from "react";
-import axios from 'axios';
-
 
 export const APIRequester: React.FC = () => {
     const [data, setData] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
     const handleSubmit = useCallback((param: string) => {
         (async () => {
-            let response: any;
-            try {
-                if(!param.length) {
-                    return;
-                }
-                response = await axios(`https://api.github.com/users/${param}`);
-            } catch (err) {
-                alert(err);
+            if(!param.length) {
+                setErrorMessage( 'Type something, please');
                 return;
             }
 
-            let dataResponse: any = response.data;
-            let arr = [];
+            const response = await fetch(`https://api.github.com/users/${param}`);
+            if (!response.ok && response.status === 404) {
+                setErrorMessage( 'User Not Found');
+            } else {
+                const dataResponse: any = await response.json();
+                let arr = [];
 
-            for (let obj in dataResponse) {
-                arr.push(`${obj} : ${dataResponse[obj]}`);
+                for (let obj in dataResponse) {
+                    arr.push(`${obj} : ${dataResponse[obj]}`);
+                }
+                setData(arr);
+                setErrorMessage('');
             }
-            setData(arr);
+
         })();
 
     }, []);
@@ -43,12 +43,15 @@ export const APIRequester: React.FC = () => {
                 </form>
             </div>
             {
-                data.length > 0 ?
+                errorMessage.length > 0 ?
+                    (<h1>{ errorMessage } <p className="unicode_symbol">&#9785;</p></h1>) :
+                        ( data.length > 0 ?
                         (<div className="response-view">
                             {
                                 data.map((row: any, index) => <p key={index}>{`${row}`}</p>)
                             }
                         </div>) : ''
+                        )
             }
         </main>
     )
