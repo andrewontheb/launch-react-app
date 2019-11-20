@@ -1,4 +1,4 @@
-import React, { useCallback, useState  } from "react";
+import React, { useCallback, useState } from "react";
 
 const LsSetImages = (images: string[]) => {
     localStorage.setItem('images', JSON.stringify(images));
@@ -17,7 +17,7 @@ export const ImageFinder: React.FC = () => {
     const [images, setImages] = useState<string[]>(LsGetImages());
     const [searchUrl, setSearchUrl] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const handleSubmit = useCallback( (imgUrl: string) => {
+    const handleSubmit = useCallback((imgUrl: string) => {
         if(!imgUrl.length) {
             setErrorMessage( 'Type something, please');
             return;
