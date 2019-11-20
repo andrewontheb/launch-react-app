@@ -9,31 +9,25 @@ const toggleNav = (): void => {
     navList.classList.toggle('opened');
 };
 
-const Header: React.FC = () => {
+const Header = () => {
     return (<header className="App-header">
         <div className="App-header__logo">
             <a href="https://reactjs.org/docs">
                 <img src={logo}  alt="logo" />
             </a>
         </div>
-        <Button></Button>
-        <ul className="App-header__menu-list nav-list">
-            <NavLink className="App-header__menu-list--item nav-list__item " activeClassName="active" onClick={toggleNav}  to="/images">Find images</NavLink>
-            <NavLink className="App-header__menu-list--item nav-list__item " activeClassName="active" onClick={toggleNav} to="/rest">REST API request</NavLink>
-            <NavLink className="App-header__menu-list--item nav-list__item " activeClassName="active" onClick={toggleNav} to="/gql">GraphQl API requests</NavLink>
-        </ul>
-    </header>);
-};
-
-const Button: React.FC = () => {
-    return(
         <button type="button" className="nav-toggle" onClick={toggleNav}>
             <span className="sr-only">Toggle navigation</span>
             <span className="icon-bar"></span>
             <span className="icon-bar"></span>
             <span className="icon-bar"></span>
         </button>
-    )
+        <ul className="App-header__menu-list nav-list">
+            <NavLink className="App-header__menu-list--item nav-list__item " activeClassName="active" onClick={toggleNav}  to="/images">Find images</NavLink>
+            <NavLink className="App-header__menu-list--item nav-list__item " activeClassName="active" onClick={toggleNav} to="/rest">REST API request</NavLink>
+            <NavLink className="App-header__menu-list--item nav-list__item " activeClassName="active" onClick={toggleNav} to="/gql">GraphQl API requests</NavLink>
+        </ul>
+    </header>);
 };
 
 export default Header;

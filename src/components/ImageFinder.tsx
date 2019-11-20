@@ -13,21 +13,22 @@ const LsGetImages = (): string[] => {
     }
 };
 
-export const FirstTab: React.FC = () => {
+export const ImageFinder: React.FC = () => {
     const [images, setImages] = useState<string[]>(LsGetImages());
     const [searchUrl, setSearchUrl] = useState('');
-    const [isError, setIsError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const handleSubmit = useCallback((imgUrl: string) => {
         if(!imgUrl.length) {
+            setErrorMessage( 'Type something, please');
             return;
         }
         if (!imgUrl.endsWith('.jpeg') && !imgUrl.endsWith('.jpg') && !imgUrl.endsWith('.png')) {
-            setIsError(true);
+            setErrorMessage('Provided url is not valid image url.');
             return;
         }
         setImages([...images, imgUrl]);
         LsSetImages([...images, imgUrl]);
-        setIsError(false);
+        setErrorMessage('');
     }, [images]);
     const handleDelete = useCallback( (index: number) => {
         const newImages = [
@@ -51,7 +52,7 @@ export const FirstTab: React.FC = () => {
                     </form>
                 </div>
                 {
-                    isError ? <h1>There are no such results <p className="unicode_symbol">&#9785;</p></h1> : ''
+                    errorMessage.length ? <h1>{ errorMessage } <p className="unicode_symbol">&#9785;</p></h1> : ''
                 }
                 <div className="gallery">
                     {

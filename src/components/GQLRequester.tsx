@@ -1,15 +1,15 @@
 import React, { useState, useCallback } from "react";
-import { useLaunchProfileQuery } from '../generated/graphql';
+import { useLaunchProfileQuery, LaunchProfileDocument } from '../generated/graphql';
 import ClipLoader from 'react-spinners/ClipLoader';
 
-const LaunchDetails: React.FC<{id: string}> = ({ id = '15'}: {id: string}) => {
+const LaunchDetails: React.FC<{id: string}> = ({ id }: {id: string}) => {
     const { data, error, loading } = useLaunchProfileQuery({ variables: { id } });
 
     if (loading) {
         return <ClipLoader
-            sizeUnit={"px"}
+            sizeUnit="px"
             size={250}
-            color={'#09d3ac'}
+            color='#09d3ac'
             loading={true}/>;
     }
 
@@ -20,12 +20,11 @@ const LaunchDetails: React.FC<{id: string}> = ({ id = '15'}: {id: string}) => {
         </div>;
     }
 
-    if (!data) {
+    if (!data || data === null) {
         return <div>Select a flight from the panel</div>;
     }
 
-    let responseData = JSON.stringify(data.launch);
-    let launch = JSON.parse(responseData);
+    const launch = data.launch || new LaunchProfileDocument();
 
     return   <div className="launch">
         <div className="launch__id">{`Flight ${launch.flight_number} (${launch.launch_year}):`} <b className={launch.launch_success ? 'success' : 'failure'}>{launch.launch_success ? 'Success' : 'Failure'}</b></div>
@@ -37,15 +36,19 @@ const LaunchDetails: React.FC<{id: string}> = ({ id = '15'}: {id: string}) => {
 };
 
 
-export const ThirdTab: React.FC = () => {
+export const GQLRequester: React.FC = () => {
     const [launchId, setLaunchId] = useState<string>('15');
     const [inputValue, setInputValue] = useState<string>('15');
+    const [errorMessage, setErrorMessage] = useState('');
     const handleSubmit = useCallback((e: React.FormEvent) => {
+        e.preventDefault();
         if (!inputValue.length) {
+            setErrorMessage('Type something, please');
             return;
         }
-        e.preventDefault();
         setLaunchId(inputValue);
+        setErrorMessage('');
+
     }, [inputValue]);
 
     return (
@@ -57,8 +60,12 @@ export const ThirdTab: React.FC = () => {
                            onChange={(event) => setInputValue(event.currentTarget.value)}/>
                     <button className="btn btn--peach" type="submit">Go!</button>
                 </form>
-                <LaunchDetails id={launchId}></LaunchDetails>
+                {
+                    errorMessage.length ? <h1>{ errorMessage } <p className="unicode_symbol">&#9785;</p></h1> : <LaunchDetails id={launchId} />
+                }
+
             </div>
+
         </main>
     )
 };

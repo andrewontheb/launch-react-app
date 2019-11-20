@@ -9,6 +9,7 @@
     "axios-progress-bar": "^1.2.0",
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
+    "node-sass": "^4.13.0",
     "react": "^16.12.0",
     "react-apollo": "^3.1.3",
     "react-apollo-hooks": "^0.5.0",
@@ -21,7 +22,7 @@
   },
   "scripts": {
     "start": "node node_modules/react-scripts/scripts/start.js",
-    "build": "node node_modules/react-scripts/scripts/build.js",
+    "run build": "node node_modules/react-scripts/scripts/build.js",
     "test": "node node_modules/react-scripts/scripts/test.js",
     "eject": "node node_modules/react-scripts/scripts/eject.js",
     "codegen": "graphql-codegen --config codegen.yml"

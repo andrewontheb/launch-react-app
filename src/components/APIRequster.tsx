@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import axios from 'axios';
 
 
-export const SecondTab: React.FC = () => {
+export const APIRequester: React.FC = () => {
     const [data, setData] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const handleSubmit = useCallback((param: string) => {
