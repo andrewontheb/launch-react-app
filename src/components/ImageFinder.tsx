@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from "react";
 
-const LsSetImages = (images: Card[]) => {
+const LsSetImages = (images: Image[]) => {
     localStorage.setItem('images', JSON.stringify(images));
 };
 
-const LsGetImages = (): Card[] => {
+const LsGetImages = (): Image[] => {
     const json = localStorage.getItem('images') || '[]';
     try {
         return JSON.parse(json);
@@ -13,13 +13,13 @@ const LsGetImages = (): Card[] => {
     }
 };
 
-export interface Card {
+export interface Image {
     src: string;
     liked: boolean;
 }
 
 export const ImageFinder: React.FC = () => {
-    const [images, setImages] = useState<Card[]>(LsGetImages());
+    const [images, setImages] = useState<Image[]>(LsGetImages());
     const [searchUrl, setSearchUrl] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -60,13 +60,18 @@ export const ImageFinder: React.FC = () => {
         LsSetImages(newImages);
     }, [images]);
 
-    const handleLike = useCallback( (e, i: number) => {
-        const likedImage: Card = {src: images[i].src, liked: !images[i].liked};
-        images[i] = likedImage;
-        setImages([...images]);
-        LsSetImages([...images]);
+    const handleLike = useCallback( (event, likedIndex: number) => {
+
+        const newImages  = images.map((image, index) => {
+           if (likedIndex === index) {
+                image = {src: images[likedIndex].src, liked: !images[likedIndex].liked};
+           }
+           return image;
+        });
+        setImages(newImages);
+        LsSetImages(newImages);
         setErrorMessage('');
-        e.currentTarget.classList.toggle('is-checked');
+        event.currentTarget.classList.toggle('is-checked');
     }, [images]);
 
     return (
