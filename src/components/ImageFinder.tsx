@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from "react";
 
-const LsSetImages = (images: string[]) => {
+const LsSetImages = (images: Card[]) => {
     localStorage.setItem('images', JSON.stringify(images));
 };
 
-const LsGetImages = (): string[] => {
+const LsGetImages = (): Card[] => {
     const json = localStorage.getItem('images') || '[]';
     try {
         return JSON.parse(json);
@@ -13,10 +13,16 @@ const LsGetImages = (): string[] => {
     }
 };
 
+export interface Card {
+    src: string;
+    liked: boolean;
+}
+
 export const ImageFinder: React.FC = () => {
-    const [images, setImages] = useState<string[]>(LsGetImages());
+    const [images, setImages] = useState<Card[]>(LsGetImages());
     const [searchUrl, setSearchUrl] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+
     const handleSubmit = useCallback((imgUrl: string) => {
         if(!imgUrl.length) {
             setErrorMessage( 'Type something, please');
@@ -33,8 +39,8 @@ export const ImageFinder: React.FC = () => {
             if (response.ok) {
                 const contentType = response.headers.get('content-type') || '';
                 if (contentType.includes('jpeg') || contentType.includes('jpg') || contentType.includes('.png')) {
-                    setImages([...images, imgUrl]);
-                    LsSetImages([...images, imgUrl]);
+                    setImages([...images, {src: imgUrl, liked: false}]);
+                    LsSetImages([...images, {src :imgUrl, liked: false}]);
                     setErrorMessage('');
                 }
             } else {
@@ -44,6 +50,7 @@ export const ImageFinder: React.FC = () => {
         })();
 
     }, [images]);
+
     const handleDelete = useCallback( (index: number) => {
         const newImages = [
             ...images.slice(0,index),
@@ -51,7 +58,17 @@ export const ImageFinder: React.FC = () => {
         ];
         setImages(newImages);
         LsSetImages(newImages);
-    }, [images])
+    }, [images]);
+
+    const handleLike = useCallback( (e, i: number) => {
+        const likedImage: Card = {src: images[i].src, liked: !images[i].liked};
+        images[i] = likedImage;
+        setImages([...images]);
+        LsSetImages([...images]);
+        setErrorMessage('');
+        e.currentTarget.classList.toggle('is-checked');
+    }, [images]);
+
     return (
         <main>
             <p>Let's find some images !</p>
@@ -70,11 +87,16 @@ export const ImageFinder: React.FC = () => {
                 }
                 <div className="gallery">
                     {
-                        images.map((image, index) => <div className="gallery__item" key={index}>
+                        images.map((image, index) => <div className="gallery__item" key={index} >
                             <div className="spreader"></div>
-                            <img src={`${image}`} alt=""/>
+                            <img src={`${image.src}`} alt=""/>
                             <button className="btn btn--close"  onClick={() => {handleDelete(index)}}>X</button>
                             <span className="placeholder">placeholder</span>
+                            <div onClick={(e) => handleLike(e, index)} className={image.liked ? 'is-checked': ''}>
+                                <svg height="35" width="50"  viewBox="0 0 32 32" className="icon is-outlined is-hoverable is-transit is-activeable">
+                                    <path id="heart-icon" d="M16,28.261c0,0-14-7.926-14-17.046c0-9.356,13.159-10.399,14-0.454c1.011-9.938,14-8.903,14,0.454 C30,20.335,16,28.261,16,28.261z"/>
+                                </svg>
+                            </div>
                         </div>)
                     }
                 </div>

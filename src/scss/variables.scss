@@ -9,4 +9,54 @@ $border: 1px solid #d4dcec;
 $font-size: 16px;
 $primary-font-size: calc(10px + 2vmin);
 
+.icon{
+  width: 32px;
+  height: 32px;
+  fill: #ccc;
+  position: absolute;
+  z-index: 11;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.is-checked {
+  .icon {
+    fill: #FE4365 !important;
+  }
+}
+
+.icon.is-outlined{
+  stroke:  #FE4365;
+  stroke-width: 2px;
+  fill: transparent;
+}
+
+.icon.is-x2{
+  width: 64px;
+  height: 64px;
+}
+
+.icon.is-hoverable:hover{
+  fill: #fe436570;
+  transform: scale(1.05) translateX(-50%);
+  cursor: pointer;
+}
+
+.icon.is-activeable:active{
+  transform: scale(1.25) translateX(-50%);
+  cursor: pointer;
+}
+
+.icon.is-pink--onhover:hover{
+  fill: pink;
+}
+
+.icon.is-transit{
+  -webkit-transition: all .35s ease-out;
+  -moz-transition: all .35s ease-out;
+  -ms-transition: all .35s ease-out;
+  -o-transition: all .35s ease-out;
+  transition: all .35s ease-out;
+}
 

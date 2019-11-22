@@ -39,7 +39,7 @@ const LaunchDetails: React.FC<{id: string}> = ({ id }: {id: string}) => {
 export const GQLRequester: React.FC = () => {
     const [launchId, setLaunchId] = useState<string>('15');
     const [inputValue, setInputValue] = useState<string>('15');
-    const [errorMessage, setErrorMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState<string>('');
     const handleSubmit = useCallback((e: React.FormEvent) => {
         e.preventDefault();
         if (!inputValue.length) {
@@ -66,7 +66,6 @@ export const GQLRequester: React.FC = () => {
                 }
 
             </div>
-
         </main>
     )
 };
